@@ -17,7 +17,8 @@
 			.controller>ul{display:table; width:100%; margin-bottom: 0;}
 			.controller>ul>li{display:table-cell; padding:10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color:#aaa; cursor:pointer; border-right: 1px solid #999; text-align: center; width:1%;}
 			.controller>ul>li:last-child{border-right:0px;}
-			.controller>ul>li.active, .controller>ul>li:hover{color:#fff;}
+			.controller>ul>li>a{color:#aaa; text-decoration:none;}
+			.controller>ul>li.active>a, .controller>ul>li>a:hover{color:#fff;}
 			.container{width:1000px; margin: 0 auto;}
 		</style>
 	</head>
@@ -55,20 +56,23 @@
 				this.length = (data.length >= 5)? 5 : data.length;
 				for (var i = 0; i < this.length; i++) {
 					var html = document.createElement("LI");
-					html.innerHTML = data[i].desc;
-					html.setAttribute('title', data[i].desc);
 					that.controller.appendChild(html);
 				}
-				this.controller.getElementsByTagName('li')[that.idx].className = "active";
-
-				var lis = this.controller.getElementsByTagName('li');
+				var lis = that.controller.getElementsByTagName('li');
 				for (var i = 0; i < lis.length; i++) {
-					var txt = lis[i].innerHTML;
+					var a = document.createElement("a");
+					var txt = data[i].desc;
 					if (txt.length >= 10) {
 						txt = txt.substring(0, 10);
-						lis[i].innerHTML = txt + '...';
+						a.innerHTML = txt + '...';
+					}else{
+						a.innerHTML = txt;
 					}
+					a.setAttribute('title', data[i].desc);
+					a.setAttribute('href', data[i].link);
+					lis[i].appendChild(a);
 				}
+				this.controller.getElementsByTagName('li')[that.idx].className = "active";
 			}
 			Slider.prototype.bindEvt = function(){
 				var that = this;
@@ -123,26 +127,32 @@
 			var data = [
 				{
 					img:"src/images/slider01.png",
-					desc:"呼朋唤友来注册 推荐奖励无上限"
+					link:"#",
+					desc:"呼朋唤友来注册 推荐奖励无上限推荐奖励无上限推荐奖励无上限推荐奖励无上限"
 				},
 				{
-					img:"src/images/brand01.png",
+					img:"src/images/slider01.png",
+					link:"#",
 					desc:"聚富鑫2015抗战胜利70周年放假"
 				},
 				{
 					img:"src/images/bg.png",
+					link:"#",
 					desc:"聚福鑫邀您参与”一路同行 财富"
 				},
 				{
 					img:"src/images/slider01.png",
+					link:"#",
 					desc:"聚福鑫邀您参与”一路同行 财富"
 				},
 				{
 					img:"src/images/bg.png",
+					link:"#",
 					desc:"聚福鑫邀您参与”一路同行 财富"
 				},
 				{
 					img:"src/images/bg.png",
+					link:"#",
 					desc:"聚福鑫邀您参与”一路同行 财富"
 				}
 			]
