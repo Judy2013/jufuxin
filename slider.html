@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Demo of Slider</title>
+		<style>
+			html, body{padding:0; margin:0; font-family:Microsoft YaHei, "微软雅黑"; font-size:16px;}
+			ul{list-style:none; margin:0; padding:0;}
+			.slider{background-color:#EF4E15; background-position: center top; background-size: auto 100%; height: 404px; -webkit-transition: background .25s ease;
+			   -moz-transition: background .25s ease;
+			    -ms-transition: background .25s ease;
+			     -o-transition: background .25s ease;
+			        transition: background .25s ease;}
+			.slider > .container{height: 404px;}
+			.slider .controller{margin-top: 22px;}
+			.controller{background:rgba(0,0,0,.6);}
+			.controller>ul{display:table; width:100%; margin-bottom: 0;}
+			.controller>ul>li{display:table-cell; padding:10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color:#aaa; cursor:pointer; border-right: 1px solid #999; text-align: center; width:1%;}
+			.controller>ul>li:last-child{border-right:0px;}
+			.controller>ul>li.active, .controller>ul>li:hover{color:#fff;}
+			.container{width:1000px; margin: 0 auto;}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="slider" id="slider">
+				<div class="controller">
+					<ul></ul>
+				</div>
+			</div>
+		</div>
+
+		<script>
+
+			function Slider(elmt, data){
+				this.banner = document.getElementById(elmt);
+				this.controller = this.banner.querySelector('.controller').getElementsByTagName('ul')[0];
+				this.length = null;
+				this.img = new Image();
+				this.step = 2000;
+				this.idx = 0;
+				this.timer;
+
+				this.render();
+				this.setSlide();
+				this.bindEvt();
+			}
+			Slider.prototype.render = function(){
+				var that = this;
+				this.controller.innerHTML = "";
+				this.img.src = data[that.idx].img;
+				this.img.onload = function () {
+					that.banner.style.backgroundImage = "url("+that.img.src+")";
+				}
+				this.length = (data.length >= 5)? 5 : data.length;
+				for (var i = 0; i < this.length; i++) {
+					var html = document.createElement("LI");
+					html.innerHTML = data[i].desc;
+					html.setAttribute('title', data[i].desc);
+					that.controller.appendChild(html);
+				}
+				this.controller.getElementsByTagName('li')[that.idx].className = "active";
+
+				var lis = this.controller.getElementsByTagName('li');
+				for (var i = 0; i < lis.length; i++) {
+					var txt = lis[i].innerHTML;
+					if (txt.length >= 10) {
+						txt = txt.substring(0, 10);
+						lis[i].innerHTML = txt + '...';
+					}
+				}
+			}
+			Slider.prototype.bindEvt = function(){
+				var that = this;
+				var oClick = this.controller.getElementsByTagName('li');
+				for (var i = 0; i < oClick.length; i++) {
+					(function(index){
+						oClick[i].onmouseover = function(){
+							for (var i = 0; i < oClick.length; i++) {
+								oClick[i].className = "";
+							}
+							this.className = "active";
+							that.idx = index;
+							that.goto.call(that, that.idx);
+						};
+						oClick[i].onmouseout = function(){
+							that.setSlide();
+						};
+					})(i);
+				}
+			}
+			Slider.prototype.goto = function(j){
+				var that = this;
+				if (j !== undefined) {
+					clearInterval(this.timer);
+					this.img.src = data[j].img;
+					this.img.onload = function () {
+						that.banner.style.backgroundImage = "url("+that.img.src+")";
+					}
+				}
+			}
+			Slider.prototype.setSlide = function(){
+				var that = this;
+				this.timer = setInterval(function(){
+					that.next();
+				}, this.step)
+				this.goto();
+			}
+			Slider.prototype.next = function(){
+				var that = this;
+				(this.idx < this.length-1) ? this.idx ++ : this.idx = 0;
+				this.img.src = data[that.idx].img;
+				this.img.onload = function () {
+					that.banner.style.backgroundImage = "url("+that.img.src+")";
+				}
+				for (var i = 0; i < this.length; i++) {
+					this.controller.getElementsByTagName('li')[i].className = "";
+				}
+				this.controller.getElementsByTagName('li')[that.idx].className = "active";
+			}
+
+			//************************
+			var data = [
+				{
+					img:"src/images/slider01.png",
+					desc:"呼朋唤友来注册 推荐奖励无上限"
+				},
+				{
+					img:"src/images/brand01.png",
+					desc:"聚富鑫2015抗战胜利70周年放假"
+				},
+				{
+					img:"src/images/bg.png",
+					desc:"聚福鑫邀您参与”一路同行 财富"
+				},
+				{
+					img:"src/images/slider01.png",
+					desc:"聚福鑫邀您参与”一路同行 财富"
+				},
+				{
+					img:"src/images/bg.png",
+					desc:"聚福鑫邀您参与”一路同行 财富"
+				},
+				{
+					img:"src/images/bg.png",
+					desc:"聚福鑫邀您参与”一路同行 财富"
+				}
+			]
+			var s = new Slider("slider", data);
+
+		</script>
+	</body>
+</html>
